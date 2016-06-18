@@ -1,4 +1,13 @@
-package endpoint;
+/*
+ * HDB3 Encoder
+ * @author: Leonardo Winter Pereira
+ * @authot: Caio Cesar
+ * @author: Mauro Vialich
+ * 
+ * EntryPoint. Last modified: 18.06.2016
+ */
+
+package clienteEServidor;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -6,12 +15,13 @@ import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public abstract class Endpoint extends Thread {
-
+public abstract class Endpoint extends Thread
+{
 	private String id;
 	protected Socket socket;
 
-	Endpoint(String id) {
+	Endpoint(String id)
+	{
 		this.id = id;
 	}
 
@@ -95,8 +105,8 @@ public abstract class Endpoint extends Thread {
 		}
 	}
 
-	void println(String message) {
+	void println(String message)
+	{
 		System.out.println("[" + id + "] " + message);
 	}
-
 }
