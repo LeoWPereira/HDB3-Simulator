@@ -25,38 +25,59 @@ public abstract class Endpoint extends Thread
 		this.id = id;
 	}
 
-	void openServerSocket(int portNumber, Runnable process) {
+	void abreSocketServidor(int portNumber, Runnable process)
+	{
 		ServerSocket serverSocket = null;
-		try {
+		
+		try 
+		{
 			serverSocket = new ServerSocket(portNumber);
+			
 			socket = serverSocket.accept();
+			
 			process.run();
-		} catch (IOException e) {
-			println("ServerSocket could not be open");
-		} finally {
-			if (serverSocket != null) {
-				try {
+		} 
+		catch (IOException e) 
+		{
+			println("Socket do Servidor não pôde ser inicializado");
+		} 
+		finally
+		{
+			if (serverSocket != null) 
+			{
+				try
+				{
 					serverSocket.close();
-				} catch (IOException e1) {
+				}
+				catch (IOException e1)
+				{
 					e1.printStackTrace();
 				}
 			}
-			closeSocket();
+			fechaSocket();
 		}
 	}
 
-	void openSocket(String hostname, int portNumber, Runnable process) {
-		try {
+	void abreSocket(String hostname, int portNumber, Runnable process)
+	{
+		try 
+		{
 			socket = new Socket(hostname, portNumber);
+			
 			process.run();
-		} catch (IOException e) {
-			println("Socket could not be open");
-		} finally {
-			closeSocket();
+		} 
+		catch (IOException e) 
+		{
+			println("Socket não pôde ser inicializado");
+		} 
+		finally 
+		{
+			fechaSocket();
 		}
 	}
 	
-	private void closeSocket(){
+	private void fechaSocket()
+	{
 		if (socket != null) {
 			try {
 				socket.close();
@@ -67,41 +88,61 @@ public abstract class Endpoint extends Thread
 	}
 
 	@SuppressWarnings("deprecation")
-	void listen(Function<String> listener) {
-		if (socket == null) {
-			println("Cannot operate with a null socket");
+	void ouvindo(Function<String> listener) 
+	{
+		if (socket == null) 
+		{
+			println("Socket Nulo");
+		
 			return;
-		} else if (listener == null) {
-			println("The listener needs to be set");
+		} 
+		else if (listener == null) 
+		{
+			println("Variável 'listener' não pode ser nula");
+		
 			return;
 		}
 
 		DataInputStream input;
+		
 		String tmp;
-		try {
+		
+		try 
+		{
 			input = new DataInputStream(socket.getInputStream());
-			while ((tmp = input.readLine()) != null) {
+		
+			while ((tmp = input.readLine()) != null) 
+			{
 				if (listener.apply(tmp))
 					break;
-
 			}
-		} catch (IOException e) {
-			println("An exception has occured while reading from the socket");
+		} 
+		catch (IOException e) 
+		{
+			println("Exceção ao tentar ler o Socket: " + e.getMessage());
 		}
 	}
 
-	void send(String data) {
-		if (socket == null) {
-			println("Cannot operate with a null socket");
+	void enviar(String data) 
+	{
+		if (socket == null) 
+		{
+			println("Socket Nulo");
+			
 			return;
 		}
 
 		PrintStream output;
-		try {
+		
+		try 
+		{
 			output = new PrintStream(socket.getOutputStream());
+		
 			output.println(data);
-		} catch (IOException e) {
-			println("An exception has occured while sending to the socket");
+		} 
+		catch (IOException e) 
+		{
+			println("Exceção ao tentar enviar o Socket: " + e.getMessage());
 		}
 	}
 

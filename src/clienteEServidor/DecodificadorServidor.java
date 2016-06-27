@@ -13,8 +13,8 @@ import codificacao.Codificador;
 
 public class DecodificadorServidor extends Endpoint
 {
-	public static final String ID = "Servidor";
-	private int portNumber;
+	public static final String 	ID 			= "Servidor";
+	private 			int		portNumber;
 
 	public DecodificadorServidor(int portNumber)
 	{
@@ -24,41 +24,51 @@ public class DecodificadorServidor extends Endpoint
 
 	public void run()
 	{		
-		openServerSocket(this.portNumber, new Runnable()
+		abreSocketServidor(this.portNumber, new Runnable()
 		{
 			@Override
 			public void run()
 			{
 				// Aguardando pelo pedido para enviar
-				listen(new Function<String>()
+				ouvindo(new Function<String>()
 				{
 					public boolean apply(String message)
 					{
 						if (!message.equals("pedido para enviar"))
 						{
-							println("O codificador não está pronto para enviar");
+							println("O codificador não está pronto para enviar\n");
 							return false;
 						}
 						
 						else
 						{
-							println("Pedido recebido");
-							println("Enviando confirmação de recebimento");
-							send("confirmação de recebimento");
+							println("Pedido recebido\n");
+							println("Enviando confirmação de recebimento\n");
+							enviar("confirmação de recebimento");
 							return true;
 						}
 					}
 
 				});
 
-				// Aguardando a mensagem a ser decodificada
-				listen(new Function<String>()
+				// Aguardando a mensagem ser decodificada
+				ouvindo(new Function<String>()
 				{
 
 					public boolean apply(String message)
 					{
-						println("Mensagem decodificada para (binário): " + Codificador.decodifica(message));
-						println("Mensagem decodificada para (ASCII): " + Codificador.binToText(Codificador.decodifica(message)));
+						println("Mensagem recebida: " + message + "\n");
+						
+						println("Mensagem decodificada para (binário): " + Codificador.decodifica(message) + "\n");
+						
+						try
+						{
+							println("Mensagem decodificada para (ASCII): " + Codificador.binToText(Codificador.decodifica(message)) + "\n");
+						}
+						catch(Exception e)
+						{
+							println(e.toString());
+						}
 						
 						return false;
 					}

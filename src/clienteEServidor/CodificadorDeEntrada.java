@@ -13,14 +13,14 @@ import java.util.Scanner;
 
 import codificacao.Codificador;
 
-public class KeyboardEncoder extends Endpoint
+public class CodificadorDeEntrada extends Endpoint
 {
-	public static final String ID = "Cliente";
+	public static final String 	ID 			= "Cliente";
 	
-	private String hostname;
-	private int portNumber;
+	private 			String 	hostname;
+	private 			int 	portNumber;
 
-	public KeyboardEncoder(String hostname, int portNumber)
+	public CodificadorDeEntrada(String hostname, int portNumber)
 	{
 		super(ID);
 		this.hostname = hostname;
@@ -29,56 +29,55 @@ public class KeyboardEncoder extends Endpoint
 
 	public void run()
 	{	
-		openSocket(this.hostname, this.portNumber, new Runnable(){
-
+		abreSocket(this.hostname, this.portNumber, new Runnable()
+		{
 			@Override
 			public void run()
 			{
-				println("Enviando pedido para enviar mensagem");
-				send("pedido para enviar");
+				println("Enviando pedido para enviar mensagem\n");
+				enviar("pedido para enviar");
 				
-				// Handshaking: waiting for clear-to-send
-				listen(new Function<String>()
+				// Aguarda permissão para enviar
+				ouvindo(new Function<String>()
 				{
 					public boolean apply(String message)
 					{
 						if (!message.equals("confirmação de recebimento"))
 						{
-							println("O sistema não está pronto para enviar");
+							println("O sistema não está pronto para enviar\n");
 							return false;
 						}
 						
-						println("Confirmação de recebimento recebida");
+						println("Confirmação de recebimento recebida\n");
 						
 						return true;
 					}
 				});
 				
-				//Listen for data
+				// Recebe entrada de dado
 				Scanner keyboard = new Scanner(System.in);
-				String line;
+				String 	line;
 				
 				println("Aguardando mensagem para envio:");
 				
 				do
 				{
 					line = keyboard.nextLine();
+					String copia = line;
 
 					if (!validateBinaryInput(line))
-					{
 						line = Codificador.textToBin(line).toString();
-						//println("Please input a binary string");
-						//continue;
-					}
-
-					println("Texto para envio (binário): " + line);
-					println("Texto para envio (ASCII): " + Codificador.binToText(line));
+					
+					println("Texto para envio (binário): " + line + "\n");
+					
+					if (!validateBinaryInput(copia))
+						println("Texto para envio (ASCII): " + Codificador.binToText(line) + "\n");
 					
 					String codificado = Codificador.codifica(line);
 					
-					println("Mensagem codificada para: " + codificado);
+					println("Mensagem codificada para: " + codificado + "\n");
 					
-					send(codificado);
+					enviar(codificado);
 				} while(line != null);
 				
 				keyboard.close();

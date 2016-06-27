@@ -7,7 +7,7 @@
  * HDB3. Last modified: 18.06.2016
  */
 
-import clienteEServidor.KeyboardEncoder;
+import clienteEServidor.CodificadorDeEntrada;
 import clienteEServidor.DecodificadorServidor;
 
 public class HDB3
@@ -26,7 +26,7 @@ public class HDB3
 		decodificador.start();
 
 		// Por fim, iniciamos o cliente
-		KeyboardEncoder codificador = new KeyboardEncoder(HOSTNAME, PORT_NUMBER);
+		CodificadorDeEntrada codificador = new CodificadorDeEntrada(HOSTNAME, PORT_NUMBER);
 		codificador.start();
 	}
 }
